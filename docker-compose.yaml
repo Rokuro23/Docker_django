@@ -1,0 +1,22 @@
+services:
+  app:
+    platform: linux/amd64
+    build:
+      context: ${CODE_PATH}
+      dockerfile: ${DOCKER_PATH}/Dockerfile
+    container_name: django_app
+    ports:
+      - "${HTTP_PORT:-8000}:8000"
+    volumes:
+      # Monta el proyecto Django desde el ENV
+      - ${CODE_PATH}:/app
+      - ${DOCKER_PATH}/entrypoint.sh:/entrypoint.sh  
+    env_file:
+      # Django lee su .env interno desde la ruta montada
+      - ${CODE_PATH}/.env
+    networks:
+      - django_net
+
+networks:
+  django_net:
+    driver: bridge
